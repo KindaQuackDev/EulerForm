@@ -1,11 +1,11 @@
-# Self-test for complexcalc. Run on the desktop:
-#     python test_complexcalc.py
+# Self-test for eulerform. Run on the desktop:
+#     python test_eulerform.py
 # Exercises the pure-math engine, the exact-pi/radical renderer, and the
 # CAS-exact fallbacks (with HAS_TI False, the CAS layer must never run
 # and every display path degrades to snapping / numerics).
 
 import math
-import complexcalc as cc
+import eulerform as cc
 
 
 def check(cond, msg):

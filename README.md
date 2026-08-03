@@ -1,8 +1,8 @@
-# ComplexCalc
+# EulerForm
 
 ## 1. Purpose
 
-ComplexCalc is a Python program that performs complex-number operations.
+EulerForm is a Python program that performs complex-number operations.
 Run the program on the TI-Nspire CX II CAS calculator (OS 6.x) or on a PC.
 
 The program uses Euler's formula to convert a complex number
@@ -12,8 +12,8 @@ between three equal forms:
 2. Trigonometric form: `r*(cos θ + i*sin θ)`.
 3. Exponential form: `r*e^(iθ)`.
 
-ComplexCalc's primary function is to perform complex algebra, but can also add, subtract,
-multiply, and divide complex numbers. ComplexCalc is also able to compute powers/n-th
+EulerForm's primary function is to perform complex algebra, but can also add, subtract,
+multiply, and divide complex numbers. EulerForm is also able to compute powers/n-th
 roots and return the modulus, argument, and conjugate of a complex number. 
 
 ## 2. Symbolic output
@@ -42,13 +42,13 @@ It does not show a rounded decimal angle for integer input.
 
 ### Exact mode
 
-ComplexCalc has an exact mode. In this mode, the program calls the CAS engine
+EulerForm has an exact mode. In this mode, the program calls the CAS engine
 of the calculator. The CAS engine returns exact symbolic values. The menu
 item `7` toggles the exact mode.
 
 The exact mode is OFF on PC. The exact mode is ON on the calculator by
 default. The exact mode won't do anything on a PC due to the lack of a CAS engine.
-Symbolic angles ARE still shown on PC. This is possible because ComplexCalc computes the symbolic angle in Python code.
+Symbolic angles ARE still shown on PC. This is possible because EulerForm computes the symbolic angle in Python code.
 
 ## 3. Files
 
@@ -56,16 +56,16 @@ This table lists the files of the project.
 
 | File | Purpose |
 |------|---------|
-| `complexcalc.py` | The main program. |
-| `test_complexcalc.py` | The self-test which runs on PC. |
+| `eulerform.py` | The main program. |
+| `test_eulerform.py` | The self-test which runs on PC. |
 | `README.md` | This file. |
 
 ## 4. To change the display characters
 
-ComplexCalc shows these characters: `π`, `√`, `·`.
+EulerForm shows these characters: `π`, `√`, `·`.
 
 If your device can not show these characters, change the constants at the
-top of `complexcalc.py`, using ASCII text instead.
+top of `eulerform.py`, using ASCII text instead.
 
 Change the constants to these values:
 
@@ -84,7 +84,7 @@ python -m venv .venv
 Run the self-test. Use this command:
 
 ```
-python test_complexcalc.py
+python test_eulerform.py
 ```
 
 The self-test passes when it shows `ALL TESTS PASSED`.
@@ -92,7 +92,7 @@ The self-test passes when it shows `ALL TESTS PASSED`.
 Run the program. Use this command:
 
 ```
-python complexcalc.py
+python eulerform.py
 ```
 
 Note: The PC version has no CAS engine so exact mode stays OFF, meaning the
@@ -105,14 +105,14 @@ program will work in numeric mode.
 1. Connect the calculator to the computer with a USB cable.
 2. Open the TI-Nspire CX software on the computer.
 3. Select **File > New > Python Program**.
-4. Paste the contents of `complexcalc.py`.
+4. Paste the contents of `eulerform.py`.
 5. Save the document.
 6. Transfer the document to the calculator.
 
 ### Method 2: Type directly on the calculator
 
 1. Select **Home > New > Python > Python Program**.
-2. Type the name of the program. For example, type `complexcalc`.
+2. Type the name of the program. For example, type `eulerform`.
 3. Type or paste the contents of the file.
 4. Press **Ctrl+B** to run the program.
 
@@ -123,12 +123,12 @@ program will work in numeric mode.
 3. In another program, type this command:
 
 ```
-from complexcalc import Cplx, fmt_rect
+from eulerform import Cplx, fmt_rect
 ```
 
 ## 7. To use the program
 
-Start ComplexCalc. The program will shows the main menu with seven items
+Start EulerForm. The program will shows the main menu with seven items
 and a quit command.
 
 | Item | Function |
@@ -144,7 +144,7 @@ and a quit command.
 
 ### To enter a number
 
-ComplexCalc will ask for the form of the number. Select one of these items:
+EulerForm will ask for the form of the number. Select one of these items:
 
 1. **Rectangular**. Type the real part `a`. Type the imaginary part `b`.
 2. **Polar**. Type the modulus `r`. Type the argument `θ`.
@@ -167,10 +167,10 @@ In `DEG` mode:
 
 ## 8. Notes
 
-- The exact display is a "snap". ComplexCalc compares a computed value with a
+- The exact display is a "snap". EulerForm compares a computed value with a
   set of simple values. If the difference is below a limit (`1e-5`), the simple 
   value is shown. The program shows a clean decimal value when no simple 
   value matches.
 - Angles are shown as a fraction of π when the angle is a multiple
-  of π. ComplexCalc will show the angle as `atan(b/a)` when the parts are
+  of π. EulerForm will show the angle as `atan(b/a)` when the parts are
   integers, and shows a decimal value in other cases.

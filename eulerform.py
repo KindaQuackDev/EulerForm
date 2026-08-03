@@ -20,8 +20,8 @@
 # Python uses "j". On a non-CAS calculator or a PC the program is
 # still fully functional (numeric + snap output).
 #
-#     python complexcalc.py          (interactive)
-#     python test_complexcalc.py     (self-test)
+#     python eulerform.py            (interactive)
+#     python test_eulerform.py       (self-test)
 
 import math
 
