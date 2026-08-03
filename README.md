@@ -13,8 +13,8 @@ between three equal forms:
 3. Exponential form: `r*e^(iθ)`.
 
 ComplexCalc's primary function is to perform complex algebra, but can also add, subtract,
-multiply, and divide complex numbers. ComplexCalc is also able to compute powers and n-th
-roots, return the modulus, argument, and conjugate of a complex number. 
+multiply, and divide complex numbers. ComplexCalc is also able to compute powers/n-th
+roots and return the modulus, argument, and conjugate of a complex number. 
 
 ## 2. Symbolic output
 
