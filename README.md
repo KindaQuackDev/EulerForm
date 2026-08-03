@@ -2,23 +2,23 @@
 
 ## 1. Purpose
 
-ComplexCalc is a Python program. The program performs complex-number math.
+ComplexCalc is a Python program that performs complex-number operations.
 Run the program on the TI-Nspire CX II CAS calculator (OS 6.x) or on a PC.
 
-The program uses Euler's formula. The program converts a complex number
+The program uses Euler's formula to convert a complex number
 between three equal forms:
 
 1. Rectangular form: `a + b*i`.
 2. Trigonometric form: `r*(cos θ + i*sin θ)`.
 3. Exponential form: `r*e^(iθ)`.
 
-The program performs complex algebra. The program can add, subtract,
-multiply, and divide complex numbers. The program computes powers and n-th
-roots. The program returns the modulus, the argument, and the conjugate.
+ComplexCalc's primary function is to perform complex algebra, but can also add, subtract,
+multiply, and divide complex numbers. ComplexCalc is also able to compute powers and n-th
+roots, return the modulus, argument, and conjugate of a complex number. 
 
 ## 2. Symbolic output
 
-The program shows exact values when it can. The program gives an exact result
+The program shows exact values when it can, and gives an exact result
 when the input parts are integers.
 
 Modulus examples:
@@ -27,7 +27,7 @@ Modulus examples:
 - `|2+3i|` shows `√13`.
 - `|3+4i|` shows `5`.
 
-The program shows the argument in one of three forms:
+Arguments are shown in one of three forms:
 
 1. A fraction of π. The argument of `1+i` shows as `π/4`.
 2. A symbolic inverse tangent. The argument of `3+4i` shows as `atan(4/3)`.
@@ -38,18 +38,17 @@ Example. Convert `3+4i` to exponential form. The program shows:
 
 - `5 * e^(i * atan(4/3))`
 
-The program does not show a rounded decimal angle for integer input.
+It does not show a rounded decimal angle for integer input.
 
 ### Exact mode
 
-The program has an exact mode. In this mode, the program calls the CAS engine
+ComplexCalc has an exact mode. In this mode, the program calls the CAS engine
 of the calculator. The CAS engine returns exact symbolic values. The menu
 item `7` toggles the exact mode.
 
-The exact mode is OFF on a PC. The exact mode is ON on the calculator by
-default. The exact mode has no effect on a PC, because a PC has no CAS engine.
-The program still shows symbolic angles on a PC. This is possible because the
-program computes the symbolic angle in Python code.
+The exact mode is OFF on PC. The exact mode is ON on the calculator by
+default. The exact mode won't do anything on a PC due to the lack of a CAS engine.
+Symbolic angles ARE still shown on PC. This is possible because ComplexCalc computes the symbolic angle in Python code.
 
 ## 3. Files
 
@@ -58,15 +57,15 @@ This table lists the files of the project.
 | File | Purpose |
 |------|---------|
 | `complexcalc.py` | The main program. |
-| `test_complexcalc.py` | The self-test. It runs on a PC. |
+| `test_complexcalc.py` | The self-test which runs on PC. |
 | `README.md` | This file. |
 
 ## 4. To change the display characters
 
-The program shows these characters: `π`, `√`, `·`.
+ComplexCalc shows these characters: `π`, `√`, `·`.
 
-If your device does not show these characters, change the constants at the
-top of `complexcalc.py`. Use ASCII text instead.
+If your device can not show these characters, change the constants at the
+top of `complexcalc.py`, using ASCII text instead.
 
 Change the constants to these values:
 
@@ -74,7 +73,7 @@ Change the constants to these values:
 - `SQRT = "sqrt"`
 - `DOT = "*"`
 
-## 5. To run the program on a PC
+## 5. To run the program on PC
 
 Create a virtual environment in the project folder. Use this command:
 
@@ -96,8 +95,8 @@ Run the program. Use this command:
 python complexcalc.py
 ```
 
-Note: The PC version has no CAS engine. The exact mode stays OFF. The
-program works in the numeric mode.
+Note: The PC version has no CAS engine so exact mode stays OFF, meaning the
+program will work in numeric mode.
 
 ## 6. To load the program on the calculator
 
@@ -129,7 +128,7 @@ from complexcalc import Cplx, fmt_rect
 
 ## 7. To use the program
 
-Start the program. The program shows the main menu. The menu has seven items
+Start ComplexCalc. The program will shows the main menu with seven items
 and a quit command.
 
 | Item | Function |
@@ -145,7 +144,7 @@ and a quit command.
 
 ### To enter a number
 
-The program asks for the form of the number. Select one of these items:
+ComplexCalc will ask for the form of the number. Select one of these items:
 
 1. **Rectangular**. Type the real part `a`. Type the imaginary part `b`.
 2. **Polar**. Type the modulus `r`. Type the argument `θ`.
@@ -168,12 +167,10 @@ In `DEG` mode:
 
 ## 8. Notes
 
-- The program shows the imaginary unit as `i`. Python uses the letter `j`
-  internally.
-- The exact display is a "snap". The program compares a computed value with a
-  set of simple values. If the difference is below a limit (`1e-5`), the
-  program shows the simple value. The program shows a clean decimal value
-  when no simple value matches.
-- The program shows an angle as a fraction of π when the angle is a multiple
-  of π. The program shows the angle as `atan(b/a)` when the parts are
-  integers. The program shows a decimal value in other cases.
+- The exact display is a "snap". ComplexCalc compares a computed value with a
+  set of simple values. If the difference is below a limit (`1e-5`), the simple 
+  value is shown. The program shows a clean decimal value when no simple 
+  value matches.
+- Angles are shown as a fraction of π when the angle is a multiple
+  of π. ComplexCalc will show the angle as `atan(b/a)` when the parts are
+  integers, and shows a decimal value in other cases.
