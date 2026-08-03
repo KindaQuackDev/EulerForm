@@ -1,107 +1,179 @@
 # ComplexCalc
 
-A self-contained Python program for the **TI-Nspire CX II CAS** (OS 6.x) and
-desktop Python 3 that does complex-number math, including **Euler's formula**
-conversions between rectangular, trigonometric and exponential forms.
+## 1. Purpose
 
-## Features
+ComplexCalc is a Python program. The program performs complex-number math.
+Run the program on the TI-Nspire CX II CAS calculator (OS 6.x) or on a PC.
 
-- **Euler conversions (both directions)**
-  - Rectangular `a + bi`  ⇄  Trigonometric `r(cos θ + i sin θ)`  ⇄  Exponential `r·e^(iθ)`
-  - Select **1 Convert forms** in the main menu, enter the number in any of the
-    three forms, and all forms are shown at once.
-- **Full complex algebra**: `+`, `-`, `*`, `/`, powers (`z^n`, De Moivre),
-  all `n`-th roots, conjugate, modulus, argument.
-- **CAS-exact radicals (true symbolic output)**: on the device the program asks
-  the CAS engine itself for exact values, instead of guessing.
-  - Modulus of any number with integer parts is exact: `|3+4i| = 5`,
-    `|1+i| = √(2)`, `|2+3i| = √(13)`.
-  - Argument is exact when it is a nice multiple of `π`: `arg(1+i) = π/4`.
-  - Entering polar form with a fraction of `π` gives exact radicals:
-    `r=2, θ=π/4  →  √2 + √2i` ; `r=2, θ=π/3  →  1 + √3i`.
-  - Everywhere a CAS answer is not available or not symbolic, the program falls
-    back to a snapped exact-looking value or a clean decimal — it never errors.
-- **Angle mode toggled at run time**: radians as fractions of `π`, or degrees.
-- The imaginary unit is shown as `i` (math convention); internally Python uses `j`.
+The program uses Euler's formula. The program converts a complex number
+between three equal forms:
 
-## CAS bridge
+1. Rectangular form: `a + b*i`.
+2. Trigonometric form: `r*(cos θ + i*sin θ)`.
+3. Exponential form: `r*e^(iθ)`.
 
-Exact output is obtained with the same technique as the public-domain
-TI-Planet `eval_expr` library: the Python program asks `ti_system` to
-`string(...)`-evaluate a TI-Basic expression on the device CAS and reads back
-the exact text (e.g. `√(13)`, `π/4`). It is:
+The program performs complex algebra. The program can add, subtract,
+multiply, and divide complex numbers. The program computes powers and n-th
+roots. The program returns the modulus, the argument, and the conjugate.
 
-- **Self-contained** (no third-party module to install).
-- **Optional**: toggled with **7 toggle exact (CAS) display** in the main menu.
-- **Portable**: on a non-CAS calculator or a desktop (`HAS_TI` is false) the
-  CAS bridge is never called and the program runs purely numerically.
+## 2. Symbolic output
 
-## Files
+The program shows exact values when it can. The program gives an exact result
+when the input parts are integers.
+
+Modulus examples:
+
+- `|1+i|` shows `√2`.
+- `|2+3i|` shows `√13`.
+- `|3+4i|` shows `5`.
+
+The program shows the argument in one of three forms:
+
+1. A fraction of π. The argument of `1+i` shows as `π/4`.
+2. A symbolic inverse tangent. The argument of `3+4i` shows as `atan(4/3)`.
+3. A decimal value. This form occurs when the real part and the imaginary
+   part are not integers.
+
+Example. Convert `3+4i` to exponential form. The program shows:
+
+- `5 * e^(i * atan(4/3))`
+
+The program does not show a rounded decimal angle for integer input.
+
+### Exact mode
+
+The program has an exact mode. In this mode, the program calls the CAS engine
+of the calculator. The CAS engine returns exact symbolic values. The menu
+item `7` toggles the exact mode.
+
+The exact mode is OFF on a PC. The exact mode is ON on the calculator by
+default. The exact mode has no effect on a PC, because a PC has no CAS engine.
+The program still shows symbolic angles on a PC. This is possible because the
+program computes the symbolic angle in Python code.
+
+## 3. Files
+
+This table lists the files of the project.
 
 | File | Purpose |
 |------|---------|
-| `complexcalc.py` | The program. Runs on the calculator and on a PC. |
-| `test_complexcalc.py` | Desktop self-test for the math engine, renderer and CAS fallbacks. |
+| `complexcalc.py` | The main program. |
+| `test_complexcalc.py` | The self-test. It runs on a PC. |
+| `README.md` | This file. |
 
-## Run on a PC
+## 4. To change the display characters
 
-```
-python test_complexcalc.py     # self-test (note: exact-mode tests simulate CAS)
-python complexcalc.py          # interactive
-```
+The program shows these characters: `π`, `√`, `·`.
 
-Everything is pure `math`/`cmath`, identical between desktop Python and the
-calculator's Python, so passing the desktop tests predicts on-device behavior.
-On a PC there is no `ti_system`, so the CAS bridge stays off and output is the
-numeric/snap form.
+If your device does not show these characters, change the constants at the
+top of `complexcalc.py`. Use ASCII text instead.
 
-## Load onto the TI-Nspire CX II CAS (OS 6.2)
+Change the constants to these values:
 
-Option A – Student Software / Teacher Software:
-1. Connect the handheld.
-2. In TI-Nspire CX software: **File ▸ New ▸ Python Program**.
-3. Paste the contents of `complexcalc.py`, then save.
-4. Transfer the resulting document to the handheld.
+- `SYMPI = "pi"`
+- `SQRT = "sqrt"`
+- `DOT = "*"`
 
-Option B – direct on the handheld:
-1. **Home ▸ New ▸ Python ▸ Python Program**, name it (e.g. `complexcalc`).
-2. Type or paste the file contents (only if you have the TI keyboard/menu
-   chars for `π`, `√`, `·`; otherwise see note below).
-3. **Ctrl + B** (or the play key) to run.
+## 5. To run the program on a PC
 
-Option C – as a reusable module (advanced):
-1. Install into `PyLib` (in the software: **Tools ▸ Install as Python Module**).
-2. Then in any other Python program: `from complexcalc import Cplx, fmt_rect`.
-
-> On-device exact mode is enabled by default. If the CAS bridge does not behave
-> on your exact OS version (older/different firmware), toggle exact OFF with
-> menu item **7** and the program still works with snapped/numeric output.
-
-## Usage
+Create a virtual environment in the project folder. Use this command:
 
 ```
-MAIN MENU
-  1 convert forms (Euler)      — enter a number any way, see all 3 forms
-  2 arithmetic (+ - * /)       — enter two numbers, pick an operation
-  3 powers and roots           — z^n, or the n-th roots (De Moivre)
-  4 modulus / argument / conjugate
-  5 save / recall              — keep a result under a name for the session
-  6 toggle angle mode (RAD/DEG)
-  7 toggle exact (CAS) display
-  q quit
+python -m venv .venv
 ```
 
-- `q` at any prompt quits.
-- Entering a number: choose **1** (rectangular, enter `a` then `b`), **2**
-  (polar, enter `r` and `θ`), or **3** (exponential, same as polar).
-- For `θ` in RAD mode, type a fraction of `π` (e.g. `1/4` = `π/4`) or a
-  decimal in radians. In DEG mode, type degrees.
+Run the self-test. Use this command:
 
-## Notes
+```
+python test_complexcalc.py
+```
 
-- The non-CAS exact display is a **snap**: if a computed value is within `1e-5`
-  of a nice fraction of `π` or a common radical, it is shown exactly; otherwise
-  a clean decimal is shown.
-- If `π` / `√` / `·` do not appear correctly on your calculator, replace the
-  constants at the top of `complexcalc.py` (`SYMPI`, `SQRT`, `DOT`) with ASCII,
-  e.g. `SYMPI = "pi"`, `SQRT = "sqrt"`, `DOT = "*"`.
+The self-test passes when it shows `ALL TESTS PASSED`.
+
+Run the program. Use this command:
+
+```
+python complexcalc.py
+```
+
+Note: The PC version has no CAS engine. The exact mode stays OFF. The
+program works in the numeric mode.
+
+## 6. To load the program on the calculator
+
+### Method 1: Use the computer software
+
+1. Connect the calculator to the computer with a USB cable.
+2. Open the TI-Nspire CX software on the computer.
+3. Select **File > New > Python Program**.
+4. Paste the contents of `complexcalc.py`.
+5. Save the document.
+6. Transfer the document to the calculator.
+
+### Method 2: Type directly on the calculator
+
+1. Select **Home > New > Python > Python Program**.
+2. Type the name of the program. For example, type `complexcalc`.
+3. Type or paste the contents of the file.
+4. Press **Ctrl+B** to run the program.
+
+### Method 3: Install the program as a module
+
+1. Use the software command **Tools > Install as Python Module**.
+2. The software moves the file to the `PyLib` folder.
+3. In another program, type this command:
+
+```
+from complexcalc import Cplx, fmt_rect
+```
+
+## 7. To use the program
+
+Start the program. The program shows the main menu. The menu has seven items
+and a quit command.
+
+| Item | Function |
+|------|----------|
+| `1` | Convert the forms of a number. |
+| `2` | Add, subtract, multiply, or divide two numbers. |
+| `3` | Compute a power or the n-th roots. |
+| `4` | Show the modulus, the argument, and the conjugate. |
+| `5` | Save or recall a result. |
+| `6` | Toggle the angle mode. |
+| `7` | Toggle the exact mode. |
+| `q` | Quit the program. |
+
+### To enter a number
+
+The program asks for the form of the number. Select one of these items:
+
+1. **Rectangular**. Type the real part `a`. Type the imaginary part `b`.
+2. **Polar**. Type the modulus `r`. Type the argument `θ`.
+3. **Exponential**. The program uses the same prompts as polar.
+
+Type `q` to quit a prompt.
+
+### To enter an angle
+
+The angle mode is `RAD` or `DEG`. The mode determines how you type the angle.
+
+In `RAD` mode:
+
+- Type a fraction of π. For example, type `1/4`. The program reads this as `π/4`.
+- Type a decimal value. The program reads this value as radians.
+
+In `DEG` mode:
+
+- Type the angle in degrees. For example, type `45`.
+
+## 8. Notes
+
+- The program shows the imaginary unit as `i`. Python uses the letter `j`
+  internally.
+- The exact display is a "snap". The program compares a computed value with a
+  set of simple values. If the difference is below a limit (`1e-5`), the
+  program shows the simple value. The program shows a clean decimal value
+  when no simple value matches.
+- The program shows an angle as a fraction of π when the angle is a multiple
+  of π. The program shows the angle as `atan(b/a)` when the parts are
+  integers. The program shows a decimal value in other cases.

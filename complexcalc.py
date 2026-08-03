@@ -280,10 +280,44 @@ def fmt_angle_deg(theta):
     return fmt_num(deg) + " deg"
 
 
-def angle_label(theta):
-    if ANGLE_MODE == "DEG":
-        return fmt_angle_deg(theta)
-    return fmt_angle(theta)
+def _rat(num, den):
+    """Reduced integer ratio string, e.g. _rat(4,3) -> '4/3'."""
+    g = _gcd(num, den)
+    n = num // g
+    d = den // g
+    if d == 1:
+        return str(n)
+    return str(n) + "/" + str(d)
+
+
+def _atan_symbolic(re, im):
+    """Exact quadrant-aware arg(re + i*im) as an atan expression.
+    Only meaningful when re and im are integers."""
+    R = int(round(re))
+    I = int(round(im))
+    if R == 0 and I == 0:
+        return "0"
+    if R > 0:
+        return "atan(" + _rat(I, R) + ")"
+    if I > 0:
+        return SYMPI + " - atan(" + _rat(I, -R) + ")"
+    if I < 0:
+        return "-" + SYMPI + " + atan(" + _rat(-I, -R) + ")"
+    return SYMPI
+
+
+def symbolic_angle(re, im, th):
+    """Exact angle string: a fraction of pi when the angle is a nice
+    multiple of pi; otherwise a symbolic atan(b/a) when the real and
+    imaginary parts are integers; otherwise a decimal label."""
+    frac = fmt_angle(th)
+    if not frac.endswith(" rad"):
+        return frac
+    if abs(re - round(re)) < 1e-9 and abs(im - round(im)) < 1e-9:
+        a = _atan_symbolic(re, im)
+        if a:
+            return a
+    return frac
 
 
 def fmt_mod(z):
@@ -296,13 +330,15 @@ def fmt_mod(z):
 
 
 def fmt_ang(z):
-    """Argument string: CAS-exact pi fraction when possible, else the
-    mode-aware numeric label."""
+    """Argument string: CAS exact when possible, else a symbolic
+    fraction of pi / atan expression, else a numeric label."""
     if EXACT_MODE and ANGLE_MODE == "RAD":
         a = cas_angle(z.re, z.im)
         if a:
             return a
-    return angle_label(z.arg())
+    if ANGLE_MODE == "DEG":
+        return fmt_angle_deg(z.arg())
+    return symbolic_angle(z.re, z.im, z.arg())
 
 
 def fmt_rect(z):

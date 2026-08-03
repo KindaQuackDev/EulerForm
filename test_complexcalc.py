@@ -35,7 +35,7 @@ check(cc.fmt_angle(math.pi / 6) == "\u03C0/6", "angle pi/6")
 # --- degrees mode
 cc.ANGLE_MODE = "DEG"
 check(cc.fmt_angle_deg(math.pi / 4) == "45 deg", "deg 45")
-check(cc.angle_label(math.pi) == "180 deg", "deg 180")
+check(cc.fmt_ang(cc.Cplx(-1, 0)) == "180 deg", "deg 180")
 cc.ANGLE_MODE = "RAD"
 
 # --- arithmetic
@@ -103,11 +103,19 @@ check(cc.cas_angle(1, 1) is None, "no-CAS cas_angle is None")
 
 z = cc.Cplx(3, 4)
 check(cc.fmt_mod(z) == "5", "fmt_mod fallback (|3+4i| = 5)")
-check(cc.fmt_ang(z) == "4/5 rad" or cc.fmt_ang(z) == "0.927295 rad",
-      "fmt_ang fallback numeric")
+check(cc.fmt_ang(z) == "atan(4/3)", "fmt_ang symbolic atan (3+4i)")
 z = cc.Cplx(1, 1)
 check(cc.fmt_mod(z) == "\u221A2", "fmt_mod fallback sqrt2")
 check(cc.fmt_ang(z) == "\u03C0/4", "fmt_ang fallback pi/4")
+
+# --- symbolic angle rendering (pure Python, all quadrants)
+check(cc.fmt_ang(cc.Cplx(2, 3)) == "atan(3/2)", "arg atan(3/2)")
+check(cc.fmt_ang(cc.Cplx(1, 5)) == "atan(5)", "arg atan(5)")
+check(cc.fmt_ang(cc.Cplx(3, -4)) == "atan(-4/3)", "arg Q4")
+check(cc.fmt_ang(cc.Cplx(-3, 4)) == "\u03C0 - atan(4/3)", "arg Q2")
+check(cc.fmt_ang(cc.Cplx(-3, -4)) == "-\u03C0 + atan(4/3)", "arg Q3")
+check(cc.fmt_exp(cc.Cplx(3, 4)) == "5 \u00B7 e^(i \u00B7 atan(4/3))",
+      "exp symbolic atan")
 
 # stored exact strings are used by fmt_rect when present
 z = cc.Cplx(1, 1)
