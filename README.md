@@ -1,5 +1,8 @@
 # EulerForm
 
+## NOTE
+This project is a Work in Progress by a novice. This program is by no means perfect or in a final state.
+
 ## 1. Purpose
 
 EulerForm is a Python program that performs complex-number operations.
