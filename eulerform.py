@@ -491,8 +491,7 @@ def menu_convert():
     z = input_cplx("Enter a number:")
     print("")
     show(z)
-    if not HAS_TI:
-        input("Press Enter to continue...")
+    input("Press Enter to continue...")
 
 
 def menu_arithmetic():
@@ -510,8 +509,7 @@ def menu_arithmetic():
         r = z1 / z2
     print("")
     show(r)
-    if not HAS_TI:
-        input("Press Enter to continue...")
+    input("Press Enter to continue...")
 
 
 def menu_powers():
@@ -523,8 +521,7 @@ def menu_powers():
         n = get_num("  exponent n: ", False)
         print("")
         show(z.power(n))
-        if not HAS_TI:
-            input("Press Enter to continue...")
+        input("Press Enter to continue...")
     else:
         nv = get_num("  n (positive integer): ", False)
         if nv < 1 or not is_integer(nv):
@@ -534,8 +531,7 @@ def menu_powers():
         print(str(n) + " roots:")
         for r in rs:
             print("    " + fmt_rect(r) + "   | " + fmt_trig(r))
-        if not HAS_TI:
-            input("Press Enter to continue...")
+        input("Press Enter to continue...")
 
 
 def menu_metrics():
@@ -544,8 +540,7 @@ def menu_metrics():
     print("|z|       = " + fmt_mod(z))
     print("arg(z)    = " + fmt_ang(z))
     print("conjugate = " + fmt_rect(z.conjugate()))
-    if not HAS_TI:
-        input("Press Enter to continue...")
+    input("Press Enter to continue...")
 
 
 def menu_toggle_angle():
@@ -614,8 +609,7 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         print("FATAL ERROR: " + str(e))
-        if not HAS_TI:
-            try:
-                input("Press Enter to exit...")
-            except Exception:
-                pass
+        try:
+            input("Press Enter to exit...")
+        except Exception:
+            pass
