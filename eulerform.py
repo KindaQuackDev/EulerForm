@@ -25,17 +25,31 @@
 
 import math
 
+
+def is_integer(x):
+    """Check if float x is an integer value, compatible with MicroPython."""
+    return abs(x - round(x)) < 1e-9
+
+
 try:
     from ti_system import writeST, readST, recall_value
     HAS_TI = True
 except ImportError:
     HAS_TI = False
 
-# Display symbols. Swap these for plain ASCII if a device miscounts them.
-SQRT = "\u221A"      # sqrt sign
-SYMPI = "\u03C0"     # pi sign
-DOT = "\u00B7"       # multiplication dot
-I_UNIT = "i"         # imaginary unit as shown to the user
+# Display symbols. Auto-switch: ASCII on calculator, Unicode on desktop.
+if HAS_TI:
+    # Calculator: ASCII-safe characters
+    SQRT = "sqrt"
+    SYMPI = "pi"
+    DOT = "*"
+    I_UNIT = "i"
+else:
+    # Desktop: pretty Unicode
+    SQRT = "\u221A"      # sqrt sign
+    SYMPI = "\u03C0"     # pi sign
+    DOT = "\u00B7"       # multiplication dot
+    I_UNIT = "i"         # imaginary unit as shown to the user
 
 ANGLE_MODE = "RAD"   # "RAD" = radians (fractions of pi), "DEG" = degrees
 EXACT_MODE = HAS_TI  # CAS-exact display: on by default only on the device
@@ -80,14 +94,14 @@ def _is_plain_number(s):
 def _cas_number(v):
     """A clean numeric token for a CAS expression."""
     x = float(v)
-    if x.is_integer():
+    if is_integer(x):
         return str(int(x))
     return repr(x)
 
 
 def cas_modulus(re, im):
     """Exact |re + i*im| via CAS when both parts are integers."""
-    if not (float(re).is_integer() and float(im).is_integer()):
+    if not (is_integer(float(re)) and is_integer(float(im))):
         return None
     return _try_cas("sqrt(" + str(int(re)) + "^2+" + str(int(im)) + "^2)")
 
@@ -95,7 +109,7 @@ def cas_modulus(re, im):
 def cas_angle(re, im):
     """Exact arg(re + i*im) via CAS, but only when it is a nice pi
     multiple (otherwise None so the numeric angle is shown)."""
-    if not (float(re).is_integer() and float(im).is_integer()):
+    if not (is_integer(float(re)) and is_integer(float(im))):
         return None
     s = _try_cas("atan2(" + str(int(im)) + "," + str(int(re)) + ")")
     if s and SYMPI in s:
@@ -104,7 +118,12 @@ def cas_angle(re, im):
 
 
 class Quit(Exception):
-    """Raised when the user types q to leave a prompt / the program."""
+    """Raised when the user types q to leave the program (main menu only)."""
+    pass
+
+
+class Return(Exception):
+    """Raised when the user types q to return to parent menu (submenus)."""
     pass
 
 
@@ -383,22 +402,26 @@ def show(z):
 #  Input helpers
 # ==========================================================================
 
-def get_num(prompt):
+def get_num(prompt, allow_quit=False):
     while True:
         s = input(prompt).strip()
         if s.lower() == "q":
-            raise Quit()
+            if allow_quit:
+                raise Quit()
+            raise Return()
         try:
             return float(s)
         except Exception:
             print("Enter a valid number.")
 
 
-def get_choice(prompt, lo, hi):
+def get_choice(prompt, lo, hi, allow_quit=False):
     while True:
         s = input(prompt).strip()
         if s.lower() == "q":
-            raise Quit()
+            if allow_quit:
+                raise Quit()
+            raise Return()
         try:
             v = int(s)
             if lo <= v <= hi:
@@ -408,17 +431,19 @@ def get_choice(prompt, lo, hi):
         print("Enter " + str(lo) + "-" + str(hi) + ".")
 
 
-def get_theta(prompt):
+def get_theta(prompt, allow_quit=False):
     """Return (radians, exact_pi_frac) where exact_pi_frac is a TI-Basic
     pi-fraction string (or None if the angle was a plain decimal)."""
     if ANGLE_MODE == "DEG":
-        d = get_num(prompt + " (degrees): ")
+        d = get_num(prompt + " (degrees): ", allow_quit)
         return d * math.pi / 180.0, (SYMPI + "*" + _cas_number(d) + "/180")
     print(prompt + ": fraction of pi (e.g. 1/4 = pi/4) or decimal radians")
     while True:
         s = input("  theta: ").strip()
         if s.lower() == "q":
-            raise Quit()
+            if allow_quit:
+                raise Quit()
+            raise Return()
         try:
             if "/" in s:
                 parts = s.split("/")
@@ -439,15 +464,15 @@ def input_cplx(prompt):
     print("  1 rectangular (a + b" + I_UNIT + ")")
     print("  2 polar (r, theta)")
     print("  3 exponential r*e^(i*theta)")
-    c = get_choice("  choice: ", 1, 3)
+    c = get_choice("  choice: ", 1, 3, False)
     if c == 1:
-        re = get_num("  real part a: ")
-        im = get_num("  imaginary part b: ")
+        re = get_num("  real part a: ", False)
+        im = get_num("  imaginary part b: ", False)
         return Cplx(re, im)
-    r = get_num("  modulus r: ")
-    th, thx = get_theta("  argument")
+    r = get_num("  modulus r: ", False)
+    th, thx = get_theta("  argument", False)
     z = Cplx.from_polar(r, th)
-    if thx is not None and float(r).is_integer() and EXACT_MODE:
+    if thx is not None and is_integer(float(r)) and EXACT_MODE:
         r_s = str(int(r))
         re = _try_cas("cos(" + thx + ")*" + r_s)
         im = _try_cas("sin(" + thx + ")*" + r_s)
@@ -466,13 +491,15 @@ def menu_convert():
     z = input_cplx("Enter a number:")
     print("")
     show(z)
+    if not HAS_TI:
+        input("Press Enter to continue...")
 
 
 def menu_arithmetic():
     z1 = input_cplx("First number:")
     z2 = input_cplx("Second number:")
     print("operation:  1 +    2 -    3 *    4 /")
-    op = get_choice("  choice: ", 1, 4)
+    op = get_choice("  choice: ", 1, 4, False)
     if op == 1:
         r = z1 + z2
     elif op == 2:
@@ -483,26 +510,32 @@ def menu_arithmetic():
         r = z1 / z2
     print("")
     show(r)
+    if not HAS_TI:
+        input("Press Enter to continue...")
 
 
 def menu_powers():
     z = input_cplx("Enter a number:")
     print("  1 raise to power z^n (De Moivre)")
     print("  2 find the n-th roots")
-    c = get_choice("  choice: ", 1, 2)
+    c = get_choice("  choice: ", 1, 2, False)
     if c == 1:
-        n = get_num("  exponent n: ")
+        n = get_num("  exponent n: ", False)
         print("")
         show(z.power(n))
+        if not HAS_TI:
+            input("Press Enter to continue...")
     else:
-        nv = get_num("  n (positive integer): ")
-        if nv < 1 or not nv.is_integer():
+        nv = get_num("  n (positive integer): ", False)
+        if nv < 1 or not is_integer(nv):
             raise ValueError("n must be a positive integer")
         n = int(nv)
         rs = z.roots(n)
         print(str(n) + " roots:")
         for r in rs:
             print("    " + fmt_rect(r) + "   | " + fmt_trig(r))
+        if not HAS_TI:
+            input("Press Enter to continue...")
 
 
 def menu_metrics():
@@ -511,41 +544,8 @@ def menu_metrics():
     print("|z|       = " + fmt_mod(z))
     print("arg(z)    = " + fmt_ang(z))
     print("conjugate = " + fmt_rect(z.conjugate()))
-
-
-VARS = {}
-
-
-def menu_store():
-    print("  1 save the last answer under a name")
-    print("  2 recall a saved name")
-    c = get_choice("  choice: ", 1, 2)
-    if c == 1:
-        name = input("  name: ").strip()
-        if name == "":
-            raise ValueError("empty name")
-        VARS[name] = ANS
-        print("saved " + name + " = " + fmt_rect(ANS))
-    else:
-        name = input("  name: ").strip()
-        if name in VARS:
-            print("")
-            show(VARS[name])
-        elif HAS_TI:
-            try:
-                v = recall_value(name)
-                if isinstance(v, complex):
-                    z = Cplx(v.real, v.imag)
-                elif isinstance(v, (int, float)):
-                    z = Cplx(v, 0)
-                else:
-                    raise ValueError("not a number")
-                print("")
-                show(z)
-            except Exception:
-                print("unknown variable " + name)
-        else:
-            print("unknown variable " + name)
+    if not HAS_TI:
+        input("Press Enter to continue...")
 
 
 def menu_toggle_angle():
@@ -566,25 +566,27 @@ def menu_toggle_exact():
 # ==========================================================================
 
 def main():
-    print("COMPLEX NUMBER CALCULATOR")
+    print("EULERFORM")
     print("angle mode: " + ANGLE_MODE
           + "   exact(CAS): " + ("ON" if EXACT_MODE else "OFF"))
-    print("type q at any prompt to quit")
-    while True:
+    print("type q at any prompt to quit (main menu: exit program; submenus: return)")
+    running = True
+    while running:
         print("")
         print("MAIN MENU")
         print("  1 convert forms (Euler)")
         print("  2 arithmetic (+  -  *  /)")
         print("  3 powers and roots")
         print("  4 modulus / argument / conjugate")
-        print("  5 save / recall")
-        print("  6 toggle angle mode (RAD/DEG)")
-        print("  7 toggle exact (CAS) display")
+        print("  5 toggle angle mode (RAD/DEG)")
+        print("  6 toggle exact (CAS) display")
         print("  q quit")
         try:
-            c = get_choice("  choice: ", 1, 7)
+            c = get_choice("  choice: ", 1, 6, True)
         except Quit:
             break
+        except Return:
+            continue
         try:
             if c == 1:
                 menu_convert()
@@ -595,17 +597,25 @@ def main():
             elif c == 4:
                 menu_metrics()
             elif c == 5:
-                menu_store()
-            elif c == 6:
                 menu_toggle_angle()
             else:
                 menu_toggle_exact()
+        except Return:
+            continue
         except Quit:
-            break
+            running = False
         except Exception as e:
             print("error: " + str(e))
     print("done")
 
 
-
-    main()
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as e:
+        print("FATAL ERROR: " + str(e))
+        if not HAS_TI:
+            try:
+                input("Press Enter to exit...")
+            except Exception:
+                pass
