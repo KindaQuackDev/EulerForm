@@ -1,7 +1,7 @@
 # EulerForm
 
 ## NOTE
-This project is a Work in Progress by a novice. This program is by no means perfect or in a final state.
+This project is made by a novice, and is a work in progress. This program is by no means perfect or in a final state.
 
 ## 1. Purpose
 
