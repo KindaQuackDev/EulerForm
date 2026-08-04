@@ -107,23 +107,11 @@ program will work in numeric mode.
 
 1. Connect the calculator to the computer with a USB cable.
 2. Open the TI-Nspire CX software on the computer.
-3. Select **File > New > Python Program**.
-4. Paste the contents of `eulerform.py`.
-5. Save the document.
-6. Transfer the document to the calculator.
-
-### Method 2: Type directly on the calculator
-
-1. Select **Home > New > Python > Python Program**.
-2. Type the name of the program. For example, type `eulerform`.
-3. Type or paste the contents of the file.
-4. Press **Ctrl+B** to run the program.
-
-### Method 3: Install the program as a module
-
-1. Use the software command **Tools > Install as Python Module**.
-2. The software moves the file to the `PyLib` folder.
-3. In another program, type this command:
+3. Under "**Documents**," select **New > Add Python > New**.
+4. Name your program and select "**Blank Program**" as the type. 
+5. Paste the contents of `eulerform.py`.
+6. Save the document.
+7. Transfer the document to the calculator.
 
 ```
 from eulerform import Cplx, fmt_rect
