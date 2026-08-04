@@ -113,10 +113,6 @@ program will work in numeric mode.
 6. Save the document.
 7. Transfer the document to the calculator.
 
-```
-from eulerform import Cplx, fmt_rect
-```
-
 ## 7. To use the program
 
 Start EulerForm. The program will shows the main menu with seven items
