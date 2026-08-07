@@ -115,7 +115,7 @@ program will work in numeric mode.
 
 ## 7. To use the program
 
-Start EulerForm. The program will shows the main menu with seven items
+Start EulerForm. The program will shows the main menu with six items
 and a quit command.
 
 | Item | Function |
@@ -124,9 +124,8 @@ and a quit command.
 | `2` | Add, subtract, multiply, or divide two numbers. |
 | `3` | Compute a power or the n-th roots. |
 | `4` | Show the modulus, the argument, and the conjugate. |
-| `5` | Save or recall a result. |
-| `6` | Toggle the angle mode. |
-| `7` | Toggle the exact mode. |
+| `5` | Toggle the angle mode. |
+| `6` | Toggle the exact mode. |
 | `q` | Quit the program. |
 
 ### To enter a number
